@@ -14,8 +14,8 @@
             </v-card-actions>
             <v-card-text>
               <div class="list-container">
-                <v-list-item>
-                  <v-list-item-content v-if="itemList.length != 0">
+                <v-list-item v-if="itemList.length != 0">
+                  <v-list-item-content>
                     <v-list-item-title v-for="(item, i) in itemList" :key="i">
                       <div class="list-items">
                         <v-layout>
@@ -23,10 +23,10 @@
                             <p id="item">{{item}}</p>
                           </v-flex>
                           <v-flex xs2>
-                            <v-btn icon color="blue" @click="edit(i)">
+                            <v-btn icon color="#0074D9" @click="edit(i)">
                               <v-icon>edit</v-icon>
                             </v-btn>
-                            <v-btn icon class="red" @click="remove(i)">
+                            <v-btn icon color="#FF4136" @click="remove(i)">
                               <v-icon>close</v-icon>
                             </v-btn>
                           </v-flex>
@@ -35,6 +35,7 @@
                     </v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
+                <p v-else class="message">Add Items To Show List</p>
               </div>
             </v-card-text>
           </v-card>
@@ -53,11 +54,11 @@ export default {
       id: 0
     };
   },
-  beforeMount(){
-      let items= JSON.parse(localStorage.getItem('list'));
-      if(items.length > 0 ){
-          this.itemList = [... items]
-      }
+  beforeMount() {
+    let items = JSON.parse(localStorage.getItem("list"));
+    if (items.length > 0) {
+      this.itemList = [...items];
+    }
   },
   updated() {
     localStorage.setItem("list", JSON.stringify(this.itemList));
@@ -80,7 +81,12 @@ export default {
       this.id = index;
     },
     remove(index) {
-      this.itemList.splice(index, 1);
+        let item= document.getElementsByClassName('list-items')
+        console.log(item[index])
+        item[index].classList.add('fade-out');
+        setTimeout(() => {
+            this.itemList.splice(index, 1);
+        }, 3000); 
     }
   }
 };
@@ -97,8 +103,31 @@ export default {
 .list-items {
   font-size: 18px;
   margin: 10px;
+  background-color: #dddddd;
 }
-.list-items .item {
-  word-break: break-all;
+.list-items p {
+  padding: 10px;
+}
+.message {
+  font-size: 18px;
+  text-align: center;
+}
+.fade-out {
+  animation-name: remove;
+  animation-duration: 3s;
+}
+@keyframes remove {
+  0% {
+    opacity: 1;
+  }
+  25% {
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 </style>
